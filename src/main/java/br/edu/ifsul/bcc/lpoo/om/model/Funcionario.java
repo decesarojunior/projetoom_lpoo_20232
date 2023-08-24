@@ -2,8 +2,12 @@
 package br.edu.ifsul.bcc.lpoo.om.model;
 
 import java.util.Calendar;
+import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  *
@@ -11,10 +15,19 @@ import javax.persistence.Entity;
  */
 @Entity
 @DiscriminatorValue("F")
+@Table(name = "tb_funcionario")
 public class Funcionario extends Pessoa {
     
+    
+    @Column(nullable = false, length = 11)
     private String numero_ctps;
+    
+    @Column(nullable = false)
+    @Temporal(TemporalType.DATE)  
     private Calendar data_admmissao;
+      
+    @Column(nullable = true)
+    @Temporal(TemporalType.DATE)    
     private Calendar data_demissao;
 
     public Funcionario() {

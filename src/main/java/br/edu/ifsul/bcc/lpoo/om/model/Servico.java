@@ -36,11 +36,11 @@ public class Servico implements Serializable{
     private Float valor;
     
     @Column(nullable = false)
-    @Temporal(TemporalType.TIMESTAMP)  
+    @Temporal(TemporalType.DATE)  
     private Calendar data_inicio;
     
     @Column(nullable = true)
-    @Temporal(TemporalType.TIMESTAMP)  
+    @Temporal(TemporalType.DATE)  
     private Calendar data_fim;
     
     @ManyToOne

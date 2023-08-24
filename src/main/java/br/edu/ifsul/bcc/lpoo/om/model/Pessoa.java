@@ -33,7 +33,7 @@ public abstract class Pessoa implements Serializable {
     private String senha;
     
     @Column(nullable = true)
-    @Temporal(TemporalType.TIMESTAMP)    
+    @Temporal(TemporalType.DATE)    
     private Calendar data_nascimento;
     
     @Column(nullable = true, length = 8)

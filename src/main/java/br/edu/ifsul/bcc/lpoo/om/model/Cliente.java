@@ -7,18 +7,23 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
 
 /**
  *
  * @author telmo
  */
 @Entity
+@Table(name = "tb_cliente")
 @DiscriminatorValue(value = "C")
 public class Cliente extends Pessoa{
     
     @Column(nullable = true, length = 200)
     private String observacoes;
     
+    
+    @ManyToMany
     @JoinTable(name = "tb_cliente_veiculo", joinColumns = {@JoinColumn(name = "cliente_cpf")}, //agregacao, vai gerar uma tabela associativa.
                                        inverseJoinColumns = {@JoinColumn(name = "veiculo_id")})      
     private Collection<Veiculo> veiculo;

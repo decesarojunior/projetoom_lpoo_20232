@@ -57,7 +57,7 @@ public class Orcamento implements Serializable {
     
     @ManyToMany
     @JoinTable(name = "tb_orcamento_maoobra", joinColumns = {@JoinColumn(name = "orcamento_id")}, //agregacao, vai gerar uma tabela associativa.
-                                       inverseJoinColumns = {@JoinColumn(name = "peca_id")})      
+                                       inverseJoinColumns = {@JoinColumn(name = "maoobra_id")})      
     private Collection<MaoObra> maoobras;
 
     public Orcamento() {

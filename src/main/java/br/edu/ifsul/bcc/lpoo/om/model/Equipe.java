@@ -1,6 +1,7 @@
 
 package br.edu.ifsul.bcc.lpoo.om.model;
 
+import java.io.Serializable;
 import java.util.Collection;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,7 +20,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "tb_equipe")
-public class Equipe {
+public class Equipe implements Serializable{
     
     @Id
     @SequenceGenerator(name = "seq_equipe", sequenceName = "seq_equipe_id", allocationSize = 1)
@@ -29,7 +30,7 @@ public class Equipe {
     @Column(nullable = false, length = 100)
     private String nome;
     
-    @Column(nullable = false, length = 100)
+    @Column(nullable = true, length = 100)
     private String especialidades;
     
     @ManyToMany

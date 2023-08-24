@@ -31,12 +31,12 @@ public class Pagamento implements Serializable{
     @Column(nullable = false)    
     private Integer numero_parcela;
     
-    @Column(nullable = true)
-    @Temporal(TemporalType.TIMESTAMP)  
+    @Column(nullable = false)
+    @Temporal(TemporalType.DATE)  
     private Calendar data_vencimento;
     
     @Column(nullable = true)
-    @Temporal(TemporalType.TIMESTAMP)  
+    @Temporal(TemporalType.DATE)  
     private Calendar data_pagamento;
     
     @Column(nullable = false, precision = 2)
