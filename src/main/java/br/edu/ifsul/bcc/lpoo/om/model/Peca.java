@@ -16,7 +16,7 @@ import javax.persistence.Table;
  */
 
 @Entity
-@Table
+@Table(name = "tb_peca")
 public class Peca implements Serializable {
 
     @Id
