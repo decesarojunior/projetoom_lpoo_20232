@@ -1,6 +1,9 @@
 
 package br.edu.ifsul.bcc.lpoo.om.model.dao;
 
+import br.edu.ifsul.bcc.lpoo.om.model.Cargo;
+import java.util.Collection;
+
 /**
  *
  * @author telmo
@@ -32,6 +35,11 @@ public class PersistenciaJDBC implements InterfacePersistencia{
 
     @Override
     public void remover(Object o) throws Exception {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public Collection<Cargo> listCargos() throws Exception {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
     

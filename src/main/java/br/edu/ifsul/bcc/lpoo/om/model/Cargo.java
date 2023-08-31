@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -16,6 +18,8 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "tb_cargo")
+@NamedQueries({@NamedQuery(name="Cargo.orderbyid", query="select c from Cargo c "
+                                                        + "order by c.id asc")})
 public class Cargo implements Serializable{
     
     @Id

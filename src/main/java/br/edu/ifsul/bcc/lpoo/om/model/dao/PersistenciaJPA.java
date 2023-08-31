@@ -1,6 +1,9 @@
 
+
 package br.edu.ifsul.bcc.lpoo.om.model.dao;
 
+import br.edu.ifsul.bcc.lpoo.om.model.Cargo;
+import java.util.Collection;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
@@ -8,6 +11,7 @@ import javax.persistence.Persistence;
 /**
  *
  * @author telmo
+ * 
  */
 public class PersistenciaJPA implements InterfacePersistencia{
     
@@ -37,17 +41,30 @@ public class PersistenciaJPA implements InterfacePersistencia{
 
     @Override
     public Object find(Class c, Object id) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return entity.find(c, id);//encontra um determinado registro    
     }
 
     @Override
     public void persist(Object o) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        
+        entity.getTransaction().begin();// abrir a transacao.
+        entity.persist(o); //realiza o insert ou update.
+        entity.getTransaction().commit(); //comita a transacao (comando sql)         
+        
     }
 
     @Override
     public void remover(Object o) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        entity.getTransaction().begin();// abrir a transacao.
+        entity.remove(o); //realiza o delete
+        entity.getTransaction().commit(); //comita a transacao (comando sql)    
+    }
+
+    @Override
+    public Collection<Cargo> listCargos() throws Exception {
+        
+         return entity.createNamedQuery("Cargo.orderbyid").getResultList();
+        
     }
     
     
