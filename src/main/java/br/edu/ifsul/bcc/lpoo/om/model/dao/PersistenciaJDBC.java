@@ -9,6 +9,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -88,15 +89,18 @@ public class PersistenciaJDBC implements InterfacePersistencia{
             Cargo crg = (Cargo) o;
             if(crg.getId() == null){
                 //executar um insert
-                PreparedStatement ps = this.con.prepareCall("insert into "
-                        + "tb_cargo (id, descricao) values (nextval('seq_cargo_id') , ? )");
+                PreparedStatement ps = this.con.prepareStatement("insert into "
+                        + "tb_cargo (id, descricao) values (nextval('seq_cargo_id') , ? ) returning id");
                 //definir os valores para os parametros
                 ps.setString(1, crg.getDescricao());
-                ps.execute();
+                ResultSet rs = ps.executeQuery();
+                if(rs.next()){
+                    crg.setId(rs.getInt("id"));
+                }
                 ps.close();
             }else{
                 //executar um update
-                PreparedStatement ps = this.con.prepareCall("udpate tb_cargo set descricao = ? "
+                PreparedStatement ps = this.con.prepareStatement("udpate tb_cargo set descricao = ? "
                         + "where id = ?");
                
                 //definir os valores para os parametros.
@@ -114,12 +118,83 @@ public class PersistenciaJDBC implements InterfacePersistencia{
 
     @Override
     public void remover(Object o) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        
+        if(o instanceof Cargo){
+            Cargo crg = (Cargo) o;
+            
+            PreparedStatement ps = this.con.prepareStatement("delete from "
+                        + "tb_cargo where id = ?;");
+                //definir os valores para os parametros
+                ps.setInt(1, crg.getId());
+            ps.execute();
+            ps.close();
+                
+        }else{
+            
+        }
+        
+        
     }
 
     @Override
     public Collection<Cargo> listCargos() throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        Collection<Cargo> colecaoRetorno = null;
+        
+        PreparedStatement ps = this.con.prepareStatement("select id, descricao "
+                                                        + "from tb_cargo "
+                                                        + "order by id asc");
+        
+        ResultSet rs = ps.executeQuery();//executa o sql e retorna
+        
+        colecaoRetorno = new ArrayList();//inicializa a collecao
+        
+        while(rs.next()){//percorre o ResultSet
+            
+            Cargo crg = new Cargo();//inicializa o Cargo
+            
+            // recuperar as informações da célula e setar no crg
+            crg.setId(rs.getInt("id"));
+            crg.setDescricao(rs.getString("descricao"));
+            
+            colecaoRetorno.add(crg);//adiciona na colecao
+        }
+        
+        ps.close();//fecha o cursor
+        
+        return colecaoRetorno; //retorna a colecao.
+    }
+
+    @Override
+    public Collection<Funcionario> listFuncionarios() throws Exception {
+        Collection<Funcionario> colecaoRetorno = null;
+        
+        PreparedStatement ps = this.con.prepareStatement("");        
+        ResultSet rs = ps.executeQuery();//executa o sql e retorna
+        
+        colecaoRetorno = new ArrayList();//inicializa a collecao
+        
+        while(rs.next()){//percorre o ResultSet
+            
+            Funcionario func = new Funcionario();//inicializa o Cargo
+            //seta as informações do rs
+            PreparedStatement ps2 = this.con.prepareStatement("selecte ... from tb_funcionario_cur");
+            ResultSet rs2 = ps.executeQuery();//executa o sql e retorna
+            Collection<Curso> colecaoCursos = new ArrayList();
+            while(rs2.next()){
+                Curso crs = new Curso();
+                
+                colecaoCursos.add(crs);
+            }
+            rs2.close();
+            
+            func.setCursos(colecaoCursos);
+          
+            colecaoRetorno.add(func);//adiciona na colecao
+        }
+        
+        ps.close();//fecha o cursor
+        
+        return colecaoRetorno; //retorna a colecao.
     }
     
 }

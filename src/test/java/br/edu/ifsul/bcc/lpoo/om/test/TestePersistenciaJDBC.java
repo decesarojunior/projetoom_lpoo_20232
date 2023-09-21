@@ -3,6 +3,7 @@ package br.edu.ifsul.bcc.lpoo.om.test;
 
 import br.edu.ifsul.bcc.lpoo.om.model.Cargo;
 import br.edu.ifsul.bcc.lpoo.om.model.dao.PersistenciaJDBC;
+import java.util.Collection;
 import org.junit.Test;
 
 /**
@@ -25,9 +26,55 @@ public class TestePersistenciaJDBC {
                         
         }
     }
+    /*
+        implementar o seguinte teste
+        1) recuperar todos os cargos
+        2) se existir ao menos um cargo, imprimir, alterar e remover.
+        3) se não existir, criar dois cargos e imprimi.
+    */
     
     @Test
-    public void testPersistenciaCargoJPA() throws Exception {
+    public void testPersistenciaListCargoJDBC() throws Exception {
+        //criar um objeto do tipo PersistenciaJDBC.
+        PersistenciaJDBC jdbc = new PersistenciaJDBC();
+        if(jdbc.conexaoAberta()){      
+          System.out.println("testPersistenciaListCargoJDBC:: conectou no BD via jdbc ...");
+          //Passo 1: recuperar a coleção de cargos.
+          Collection<Cargo> cll = jdbc.listCargos();
+          if(!cll.isEmpty()){
+            //Passo 2: caso a coleção não esteja vazia - imprimir, alterar e remover cada item.
+            for(Cargo c : cll){
+                System.out.println("Cargo : "+c.getDescricao());
+                c.setDescricao("descricao alterada");
+                jdbc.persist(c);//alterar no banco.
+                //remove no bd
+                jdbc.remover(c);
+            }    
+          }else{
+              //Passo 3: caso a coleção esteja vazia, criar dois cargos.
+              Cargo c = new Cargo();
+              c.setDescricao("teste");
+              jdbc.persist(c);
+              System.out.println("Cadastrou o cargo :"+c.getId()+" : "+c.getDescricao());
+          }
+                              
+          jdbc.fecharConexao();
+        }else{
+            System.out.println("nao conectou no BD ...");                        
+        }
+    }
+    
+        //Exercício 28/09
+    /*
+       Criar um método de teste para funcionario
+         Passo 1: recuperar a coleção de funcionarios.
+         Passo 2: caso a coleção não esteja vazia - imprimir (inclusive os cursos), 
+                  alterar e remover cada item.
+         Passo 3: caso a coleção esteja vazia, criar dois funcionarios com um Curso cada.
+    */ 
+    
+    @Test
+    public void testPersistenciaCargoJDBC() throws Exception {
         //criar um objeto do tipo PersistenciaJPA.
         PersistenciaJDBC jpa = new PersistenciaJDBC();
         if(jpa.conexaoAberta()){

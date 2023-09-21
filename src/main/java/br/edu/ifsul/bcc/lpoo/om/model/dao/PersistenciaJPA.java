@@ -3,6 +3,7 @@
 package br.edu.ifsul.bcc.lpoo.om.model.dao;
 
 import br.edu.ifsul.bcc.lpoo.om.model.Cargo;
+import br.edu.ifsul.bcc.lpoo.om.model.Funcionario;
 import java.util.Collection;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityManager;
@@ -65,6 +66,11 @@ public class PersistenciaJPA implements InterfacePersistencia{
         
          return entity.createNamedQuery("Cargo.orderbyid").getResultList();
         
+    }
+
+    @Override
+    public Collection<Funcionario> listFuncionarios() throws Exception {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
     
     
