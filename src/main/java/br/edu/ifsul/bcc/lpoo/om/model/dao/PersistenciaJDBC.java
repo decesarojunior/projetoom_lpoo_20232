@@ -137,6 +137,8 @@ public class PersistenciaJDBC implements InterfacePersistencia{
                   //demais campos...
                 
                   ps.execute();
+                  
+                  ps.close();
 
                   //insert em tb_funcionario
                   PreparedStatement ps2 = 
