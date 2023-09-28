@@ -12,6 +12,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 /**
  *
@@ -44,6 +45,18 @@ public abstract class Pessoa implements Serializable {
     
     @Column(nullable = true, length = 100)
     private String complemento;
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
+    
+    //transient significa que não será persistido pelo jpa
+    @Transient
+    private String tipo;
 
     public Pessoa() {
     }

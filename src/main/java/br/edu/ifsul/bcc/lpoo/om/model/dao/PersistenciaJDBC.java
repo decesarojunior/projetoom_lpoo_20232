@@ -76,7 +76,11 @@ public class PersistenciaJDBC implements InterfacePersistencia{
              
          }else if(c == Curso.class){
              
-         }else{
+         }else if(c == Funcionario.class){
+             
+             //select em tb_funcionario
+             //select na tabela associativa.
+             
              
          }
          
@@ -113,6 +117,38 @@ public class PersistenciaJDBC implements InterfacePersistencia{
             
         }else if(o instanceof Funcionario){
             
+              Funcionario func = (Funcionario) o;
+              
+               //verificar a acao: insert ou update.
+              if(func.getData_admmissao() == null){
+                  
+                  //insert tb_pessoa
+                  PreparedStatement ps = 
+                          this.con.prepareStatement("insert into tb_pessoa (data_admmissao, "
+                                                                            + "cpf, "
+                                                                            + "data_nascimento) values "
+                                                                            + "(now(), "
+                                                                            + "?, "
+                                                                            + "?)");
+                  
+                  ps.setString(1, func.getCpf());        
+                  ps.setDate(2, new java.sql.Date(func.getData_nascimento().getTimeInMillis()));
+                  
+                  //insert em tb_funcionario
+                  
+                  if (!func.getCursos().isEmpty()){
+                  
+                      //se necessário o insert em tb_funcionario_curso
+                  }
+                  
+              }else{
+                  
+                  //update tb_pessoa.
+                  //update tb_funcionario.                   
+                  //atualizar os respectivos registros em tb_funcionario_curso para o func
+              }
+             
+            
         }
     }
 
@@ -129,8 +165,15 @@ public class PersistenciaJDBC implements InterfacePersistencia{
             ps.execute();
             ps.close();
                 
-        }else{
+           
+        }else if(o instanceof Funcionario){
+                
+            //remove os respectivos registro na tabela associativa
+            //remover em tb_funcionario
             
+        }else{
+
+
         }
         
         
