@@ -11,7 +11,7 @@ import org.junit.Test;
  */
 public class TestPersistenciaJPA {
     
-    //@Test
+    @Test
     public void testConexaoJPA(){
         //criar um objeto do tipo PersistenciaJPA.
         PersistenciaJPA jpa = new PersistenciaJPA();
@@ -57,7 +57,7 @@ public class TestPersistenciaJPA {
         }
     }
     
-    @Test
+    //@Test
     public void testPersistenciaListCargoJPA() throws Exception {
         //criar um objeto do tipo PersistenciaJPA.
         PersistenciaJPA jpa = new PersistenciaJPA();

@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 
 /**
@@ -124,29 +125,95 @@ public class PersistenciaJDBC implements InterfacePersistencia{
                   
                   //insert tb_pessoa
                   PreparedStatement ps = 
-                          this.con.prepareStatement("insert into tb_pessoa (data_admmissao, "
+                          this.con.prepareStatement("insert into tb_pessoa ( "
                                                                             + "cpf, "
                                                                             + "data_nascimento) values "
-                                                                            + "(now(), "
+                                                                            + "( "
                                                                             + "?, "
-                                                                            + "?)");
+                                                                            + "?) ");
                   
                   ps.setString(1, func.getCpf());        
                   ps.setDate(2, new java.sql.Date(func.getData_nascimento().getTimeInMillis()));
-                  
+                  //demais campos...
+                
+                  ps.execute();
+
                   //insert em tb_funcionario
+                  PreparedStatement ps2 = 
+                      this.con.prepareStatement("insert into tb_funcionario (data_admmissao) values (now())  ..."); 
+                     //setar os parametros...
+
+                  ResultSet rs2 = ps2.executeQuery();
+                  if(rs2.next()){
+                      
+                        Calendar dt_adm = Calendar.getInstance();
+                        dt_adm.setTimeInMillis(rs2.getDate("data_admmissao").getTime());
+                        func.setData_admmissao(dt_adm);
                   
-                  if (!func.getCursos().isEmpty()){
-                  
-                      //se necessário o insert em tb_funcionario_curso
-                  }
+                        //se necessário o insert em tb_funcionario_curso
+                        if (!func.getCursos().isEmpty()){
+
+                            for(Curso crs : func.getCursos()){
+
+                                PreparedStatement ps3 = this.con.prepareStatement("insert into tb_funcionario_curso "
+                                                                                + "(funcionario_cpf, curso_id) "
+                                                                                + "values "
+                                                                                + "(?, ?)");
+                                ps3.setString(1, func.getCpf());
+                                ps3.setInt(2, crs.getId());
+
+                                ps3.execute();
+                                ps3.close();
+                            }
+
+                        }
+
+
+                    }
+
                   
               }else{
                   
-                  //update tb_pessoa.
-                  //update tb_funcionario.                   
-                  //atualizar os respectivos registros em tb_funcionario_curso para o func
-              }
+                    //update tb_pessoa.
+                    PreparedStatement ps = 
+                          this.con.prepareStatement("update tb_pessoa set data_nascimento = ? where cpf = ? ");
+                    //setar os demais campos e parametros.
+                  
+                    //update tb_funcionario.
+                    PreparedStatement ps2 = 
+                          this.con.prepareStatement("update tb_funcionario set numero_ctps = ? where cpf = ? ");
+                    //setar os demais campos e parametros.
+                                     
+                    //atualizar os respectivos registros em tb_funcionario_curso para o func
+                   
+                     //passo 1 - remove todos os cursos do funcionario na tabela associativa 
+                     PreparedStatement ps3 = 
+                          this.con.prepareStatement("delete from tb_funcionario_curso where cpf = ?");
+                     
+                     ps3.execute();
+                     
+                    //passo 2: insere novamente, caso necessario. 
+                    if (!func.getCursos().isEmpty()){
+                            
+                            for(Curso crs : func.getCursos()){
+                                
+                                PreparedStatement ps4 = this.con.prepareStatement("insert into tb_funcionario_curso "
+                                                                                + "(funcionario_cpf, curso_id) "
+                                                                                + "values "
+                                                                                + "(?, ?)");
+                                ps4.setString(1, func.getCpf());
+                                ps4.setInt(2, crs.getId());
+                                
+                                ps4.execute();
+                                ps4.close();
+                            }
+                            
+                        }
+                   
+                     
+                    
+                    
+              }     
              
             
         }
