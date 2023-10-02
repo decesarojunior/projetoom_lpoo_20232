@@ -2,8 +2,10 @@
 package br.edu.ifsul.bcc.lpoo.om.model.dao;
 
 import br.edu.ifsul.bcc.lpoo.om.model.Cargo;
+import br.edu.ifsul.bcc.lpoo.om.model.Cliente;
 import br.edu.ifsul.bcc.lpoo.om.model.Curso;
 import br.edu.ifsul.bcc.lpoo.om.model.Funcionario;
+import br.edu.ifsul.bcc.lpoo.om.model.Veiculo;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -83,6 +85,30 @@ public class PersistenciaJDBC implements InterfacePersistencia{
              //select na tabela associativa.
              
              
+         }else if(c == Veiculo.class){
+             
+             PreparedStatement ps = this.con.prepareStatement(
+                    "select placa, ano, data_ultimo_servico, modelo from tb_veiculo where placa = ?");
+             
+             ps.setString(1, id.toString());
+             
+             ResultSet rs = ps.executeQuery();
+             Veiculo v = null;
+             if(rs.next()){
+                 v = new Veiculo();
+                    v.setPlaca(rs.getString("placa"));
+                    v.setAno(rs.getInt("ano"));
+                    
+                    if(rs.getDate("data_ultimo_servico") != null){
+                        Calendar cld = Calendar.getInstance();
+                        cld.setTimeInMillis(rs.getDate("data_ultimo_servico").getTime());
+                        v.setData_ultimo_servico(cld);
+                    }
+                    v.setModelo(rs.getString("modelo"));                                  
+             }
+             ps.close();
+             rs.close();
+             return v;
          }
          
          return null;
@@ -307,6 +333,11 @@ public class PersistenciaJDBC implements InterfacePersistencia{
         ps.close();//fecha o cursor
         
         return colecaoRetorno; //retorna a colecao.
+    }
+
+    @Override
+    public Collection<Cliente> listClientes() throws Exception {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
     
 }
