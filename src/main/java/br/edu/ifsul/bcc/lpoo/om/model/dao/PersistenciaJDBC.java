@@ -276,7 +276,8 @@ public class PersistenciaJDBC implements InterfacePersistencia{
                       ps2.setString(2, cli.getObservacoes());
 
                   Boolean ret = ps2.execute();
-                  if(ret){
+                  System.out.println(ret); 
+                  if(!ret){
                       
                         //se necessário o insert em tb_funcionario_curso
                         if (!cli.getVeiculo().isEmpty()){
@@ -325,7 +326,34 @@ public class PersistenciaJDBC implements InterfacePersistencia{
             //remove os respectivos registro na tabela associativa
             //remover em tb_funcionario
             
-        }else{
+        }else if(o instanceof Cliente){
+            
+            Cliente c = (Cliente) o;
+            
+            PreparedStatement ps = this.con.prepareStatement("delete from "
+                        + "tb_cliente_veiculo where cliente_cpf = ?;");
+                //definir os valores para os parametros
+                ps.setString(1, c.getCpf());
+                
+            ps.execute();
+            ps.close();
+            
+            ps = this.con.prepareStatement("delete from "
+                        + "tb_cliente where cpf = ?;");
+                //definir os valores para os parametros
+                ps.setString(1, c.getCpf());
+                
+            ps.execute();
+            ps.close();
+            
+            
+            ps = this.con.prepareStatement("delete from "
+                        + "tb_pessoa where cpf = ?;");
+                //definir os valores para os parametros
+                ps.setString(1, c.getCpf());
+                
+            ps.execute();
+            ps.close();
 
 
         }
@@ -417,10 +445,10 @@ public class PersistenciaJDBC implements InterfacePersistencia{
             
             PreparedStatement ps2 = this.con.prepareStatement(" select v.placa "
                     + "from tb_cliente_veiculo cv, tb_cliente c, tb_veiculo v "
-                    + " where c.cpf=cv.veiculo_id and cv.veiculo_id=v.placa and c.cpf = ? ");
+                    + " where c.cpf=cv.cliente_cpf and cv.veiculo_id=v.placa and c.cpf = ? ");
                     ps2.setString(1, cli.getCpf());
                     
-            ResultSet rs2 = ps.executeQuery();//executa o sql e retorna
+            ResultSet rs2 = ps2.executeQuery();//executa o sql e retorna
             Collection<Veiculo> colecaoVeiculos = new ArrayList();
             while(rs2.next()){
                 Veiculo v = new Veiculo();
