@@ -414,7 +414,9 @@ public class PersistenciaJDBC implements InterfacePersistencia{
             cli.setCpf(rs.getString("cpf"));
             PreparedStatement ps2 = this.con.prepareStatement(" select v.placa "
                     + "from tb_cliente_veiculo cv, tb_cliente c, tb_veiculo v "
-                    + " where c.cpf=cv.veiculo_id and cv.veiculo_id=v.placa");
+                    + " where c.cpf=cv.veiculo_id and cv.veiculo_id=v.placa and c.cpf = ? ");
+                    ps2.setString(1, cli.getCpf());
+                    
             ResultSet rs2 = ps.executeQuery();//executa o sql e retorna
             Collection<Veiculo> colecaoVeiculos = new ArrayList();
             while(rs2.next()){
