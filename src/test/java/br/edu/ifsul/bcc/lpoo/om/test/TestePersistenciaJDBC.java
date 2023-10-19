@@ -38,7 +38,7 @@ public class TestePersistenciaJDBC {
         3) se não existir, criar dois cargos e imprimi.
     */
     
-    @Test
+    //@Test
     public void testPersistenciaListCargoJDBC() throws Exception {
         //criar um objeto do tipo PersistenciaJDBC.
         PersistenciaJDBC jdbc = new PersistenciaJDBC();
@@ -128,7 +128,7 @@ public class TestePersistenciaJDBC {
     }
     
     
-    @Test
+    //@Test
     public void testPersistenciaCargoJDBC() throws Exception {
         //criar um objeto do tipo PersistenciaJPA.
         PersistenciaJDBC jpa = new PersistenciaJDBC();

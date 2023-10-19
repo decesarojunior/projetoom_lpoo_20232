@@ -412,6 +412,9 @@ public class PersistenciaJDBC implements InterfacePersistencia{
             Cliente cli = new Cliente();//inicializa o Cliente
             //seta as informações do rs
             cli.setCpf(rs.getString("cpf"));
+            cli.setNome(rs.getString("nome"));
+            cli.setSenha(rs.getString("senha"));
+            
             PreparedStatement ps2 = this.con.prepareStatement(" select v.placa "
                     + "from tb_cliente_veiculo cv, tb_cliente c, tb_veiculo v "
                     + " where c.cpf=cv.veiculo_id and cv.veiculo_id=v.placa and c.cpf = ? ");
