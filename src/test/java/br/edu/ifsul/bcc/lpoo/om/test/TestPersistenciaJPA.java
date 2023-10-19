@@ -2,7 +2,9 @@
 package br.edu.ifsul.bcc.lpoo.om.test;
 
 import br.edu.ifsul.bcc.lpoo.om.model.Cargo;
+import br.edu.ifsul.bcc.lpoo.om.model.Veiculo;
 import br.edu.ifsul.bcc.lpoo.om.model.dao.PersistenciaJPA;
+import java.util.Calendar;
 import org.junit.Test;
 
 /**
@@ -11,12 +13,32 @@ import org.junit.Test;
  */
 public class TestPersistenciaJPA {
     
-    @Test
+    //@Test
     public void testConexaoJPA(){
         //criar um objeto do tipo PersistenciaJPA.
         PersistenciaJPA jpa = new PersistenciaJPA();
         if(jpa.conexaoAberta()){
             System.out.println("conectou no BD via jpa ...");
+            jpa.fecharConexao();
+        }else{
+            System.out.println("nao conectou no BD ...");
+                        
+        }
+    }
+    
+     @Test
+    public void testInsercaoVeiculoPA() throws Exception {
+        //criar um objeto do tipo PersistenciaJPA.
+        PersistenciaJPA jpa = new PersistenciaJPA();
+        if(jpa.conexaoAberta()){
+            System.out.println("conectou no BD via jpa ...");
+            Veiculo v = new Veiculo();
+            v.setPlaca("igd1903");
+            v.setAno(1997);
+            v.setModelo("vectra gl");
+            v.setData_ultimo_servico(Calendar.getInstance());
+            jpa.persist(v);
+            
             jpa.fecharConexao();
         }else{
             System.out.println("nao conectou no BD ...");

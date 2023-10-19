@@ -2,8 +2,12 @@
 package br.edu.ifsul.bcc.lpoo.om.test;
 
 import br.edu.ifsul.bcc.lpoo.om.model.Cargo;
+import br.edu.ifsul.bcc.lpoo.om.model.Cliente;
+import br.edu.ifsul.bcc.lpoo.om.model.Veiculo;
 import br.edu.ifsul.bcc.lpoo.om.model.dao.PersistenciaJDBC;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import org.junit.Test;
 
 /**
@@ -72,6 +76,39 @@ public class TestePersistenciaJDBC {
                   alterar e remover cada item.
          Passo 3: caso a coleção esteja vazia, criar dois funcionarios com um Curso cada.
     */ 
+    
+    @Test
+    public void testPersitenciaClienteJDBC() throws Exception{
+        //criar um objeto do tipo PersistenciaJPA.
+        PersistenciaJDBC jdbc = new PersistenciaJDBC();
+        if(jdbc.conexaoAberta()){
+            System.out.println("conectou no BD via jdbc ...");
+            
+            Collection<Cliente> list = jdbc.listClientes();
+            if(!list.isEmpty()){
+                
+                //percorrer e remover.
+            }else{
+                
+                Cliente c = new Cliente();
+                //setar demais informações.
+                Veiculo v = (Veiculo) jdbc.find(Veiculo.class, "igd1903");
+                List<Veiculo> listV = new ArrayList();
+                listV.add(v);
+                
+                c.setVeiculo(listV);
+                
+                jdbc.persist(c);
+                
+            }
+            
+            jdbc.fecharConexao();
+        }else{
+            System.out.println("nao conectou no BD via jdbc ...");
+                        
+        }
+    }
+    
     
     @Test
     public void testPersistenciaCargoJDBC() throws Exception {
