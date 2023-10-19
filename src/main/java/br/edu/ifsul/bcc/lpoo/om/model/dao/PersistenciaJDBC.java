@@ -258,7 +258,7 @@ public class PersistenciaJDBC implements InterfacePersistencia{
                                                                             + "data_nascimento, tipo, nome, senha) values "
                                                                             + "( "
                                                                             + "?, "
-                                                                            + "?, 'C') ");
+                                                                            + "?, 'C', ?, ? ) ");
                   
                   ps.setString(1, cli.getCpf());        
                   ps.setDate(2, new java.sql.Date(cli.getData_nascimento().getTimeInMillis()));
@@ -271,12 +271,12 @@ public class PersistenciaJDBC implements InterfacePersistencia{
 
                   //insert em tb_funcionario
                   PreparedStatement ps2 = 
-                      this.con.prepareStatement("insert into tb_cliente (cpf, observacao) values ( ?, ? )"); 
+                      this.con.prepareStatement("insert into tb_cliente (cpf, observacoes) values ( ?, ? )"); 
                       ps2.setString(1, cli.getCpf());
                       ps2.setString(2, cli.getObservacoes());
 
-                  ResultSet rs2 = ps2.executeQuery();
-                  if(rs2.next()){
+                  Boolean ret = ps2.execute();
+                  if(ret){
                       
                         //se necessário o insert em tb_funcionario_curso
                         if (!cli.getVeiculo().isEmpty()){
