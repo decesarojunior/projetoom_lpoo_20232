@@ -6,6 +6,7 @@ import br.edu.ifsul.bcc.lpoo.om.model.Cliente;
 import br.edu.ifsul.bcc.lpoo.om.model.Veiculo;
 import br.edu.ifsul.bcc.lpoo.om.model.dao.PersistenciaJDBC;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
 import org.junit.Test;
@@ -88,10 +89,27 @@ public class TestePersistenciaJDBC {
             if(!list.isEmpty()){
                 
                 //percorrer e remover.
+                for(Cliente c : list){
+                    
+                    System.out.println("Cliente: "+c.getCpf());
+                    for(Veiculo v : c.getVeiculo()){
+                        System.out.println("\t Veiculo:" + v.getPlaca());
+                    }
+                    
+                    jdbc.remover(c);
+                }
+                
             }else{
                 
                 Cliente c = new Cliente();
                 //setar demais informações.
+                c.setCpf("10001347788");
+                c.setNome("Telmo");
+                c.setData_nascimento(Calendar.getInstance());
+                c.setComplemento(".");
+                c.setCep("99010035");
+                c.setSenha("123456");
+                c.setNumero(".");
                 Veiculo v = (Veiculo) jdbc.find(Veiculo.class, "igd1903");
                 List<Veiculo> listV = new ArrayList();
                 listV.add(v);

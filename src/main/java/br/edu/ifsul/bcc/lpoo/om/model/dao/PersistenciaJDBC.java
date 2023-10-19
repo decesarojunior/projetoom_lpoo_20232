@@ -244,6 +244,65 @@ public class PersistenciaJDBC implements InterfacePersistencia{
               }     
              
             
+        }else if(o instanceof Cliente){
+            
+              Cliente cli = (Cliente) o;
+              
+               //verificar a acao: insert ou update.
+              if(cli.getTipo() == null){
+                  
+                  //insert tb_pessoa
+                  PreparedStatement ps = 
+                          this.con.prepareStatement("insert into tb_pessoa ( "
+                                                                            + "cpf, "
+                                                                            + "data_nascimento, tipo, nome, senha) values "
+                                                                            + "( "
+                                                                            + "?, "
+                                                                            + "?, 'C') ");
+                  
+                  ps.setString(1, cli.getCpf());        
+                  ps.setDate(2, new java.sql.Date(cli.getData_nascimento().getTimeInMillis()));
+                  ps.setString(3, cli.getNome());
+                  ps.setString(4, cli.getSenha());
+                
+                  ps.execute();
+                  
+                  ps.close();
+
+                  //insert em tb_funcionario
+                  PreparedStatement ps2 = 
+                      this.con.prepareStatement("insert into tb_cliente (cpf, observacao) values ( ?, ? )"); 
+                      ps2.setString(1, cli.getCpf());
+                      ps2.setString(2, cli.getObservacoes());
+
+                  ResultSet rs2 = ps2.executeQuery();
+                  if(rs2.next()){
+                      
+                        //se necessário o insert em tb_funcionario_curso
+                        if (!cli.getVeiculo().isEmpty()){
+
+                            for(Veiculo vs : cli.getVeiculo()){
+
+                                PreparedStatement ps3 = this.con.prepareStatement("insert into tb_cliente_veiculo "
+                                                                                + "(cliente_cpf, veiculo_id) "
+                                                                                + "values "
+                                                                                + "(?, ?)");
+                                ps3.setString(1, cli.getCpf());
+                                ps3.setString(2, vs.getPlaca());
+
+                                ps3.execute();
+                                ps3.close();
+                            }
+
+                        }
+
+
+                    }
+
+                  
+              }     
+            
+            
         }
     }
 
@@ -337,7 +396,43 @@ public class PersistenciaJDBC implements InterfacePersistencia{
 
     @Override
     public Collection<Cliente> listClientes() throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+       
+        Collection<Cliente> colecaoRetorno = null;
+        
+        PreparedStatement ps = this.con.prepareStatement("select p.nome, p.senha, p.cpf from tb_pessoa p, "
+                                                                    + "tb_cliente c where p.cpf=c.cpf");
+
+                                                                        
+        ResultSet rs = ps.executeQuery();//executa o sql e retorna
+        
+        colecaoRetorno = new ArrayList();//inicializa a collecao
+        
+        while(rs.next()){//percorre o ResultSet
+            
+            Cliente cli = new Cliente();//inicializa o Cliente
+            //seta as informações do rs
+            cli.setCpf(rs.getString("cpf"));
+            PreparedStatement ps2 = this.con.prepareStatement(" select v.placa "
+                    + "from tb_cliente_veiculo cv, tb_cliente c, tb_veiculo v "
+                    + " where c.cpf=cv.veiculo_id and cv.veiculo_id=v.placa");
+            ResultSet rs2 = ps.executeQuery();//executa o sql e retorna
+            Collection<Veiculo> colecaoVeiculos = new ArrayList();
+            while(rs2.next()){
+                Veiculo v = new Veiculo();
+                v.setPlaca(rs2.getString("placa"));
+                colecaoVeiculos.add(v);
+            }
+            rs2.close();
+            
+            cli.setVeiculo(colecaoVeiculos);
+          
+            colecaoRetorno.add(cli);//adiciona na colecao
+        }
+        
+        ps.close();//fecha o cursor
+        
+        return colecaoRetorno; //retorna a colecao.
+        
     }
     
 }
