@@ -92,7 +92,7 @@ public class TestePersistenciaJDBC {
                 for(Cliente c : list){
                     
                     System.out.println("Cliente: "+c.getCpf());
-                    for(Veiculo v : c.getVeiculo()){
+                    for(Veiculo v : c.getVeiculos()){
                         System.out.println("\t Veiculo:" + v.getPlaca());
                     }
                     
@@ -111,10 +111,13 @@ public class TestePersistenciaJDBC {
                 c.setSenha("123456");
                 c.setNumero(".");
                 Veiculo v = (Veiculo) jdbc.find(Veiculo.class, "igd1903");
-                List<Veiculo> listV = new ArrayList();
-                listV.add(v);
+                if(v == null){
                 
-                c.setVeiculo(listV);
+                    List<Veiculo> listV = new ArrayList();
+                    listV.add(v);
+                    c.setVeiculos(listV);
+                
+                }
                 
                 jdbc.persist(c);
                 

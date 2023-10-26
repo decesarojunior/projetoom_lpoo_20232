@@ -23,7 +23,7 @@ public class PersistenciaJDBC implements InterfacePersistencia{
     
     private final String DRIVER = "org.postgresql.Driver";
     private final String USER = "postgres";
-    private final String SENHA = "123456";
+    private final String SENHA = "1234567";
     public static final String URL = "jdbc:postgresql://localhost:5432/db_om_lpoo_20232";
     private Connection con = null;
 
@@ -280,9 +280,9 @@ public class PersistenciaJDBC implements InterfacePersistencia{
                   if(!ret){
                       
                         //se necessário o insert em tb_funcionario_curso
-                        if (!cli.getVeiculo().isEmpty()){
+                        if (!cli.getVeiculos().isEmpty()){
 
-                            for(Veiculo vs : cli.getVeiculo()){
+                            for(Veiculo vs : cli.getVeiculos()){
 
                                 PreparedStatement ps3 = this.con.prepareStatement("insert into tb_cliente_veiculo "
                                                                                 + "(cliente_cpf, veiculo_id) "
@@ -457,7 +457,7 @@ public class PersistenciaJDBC implements InterfacePersistencia{
             }
             rs2.close();
             
-            cli.setVeiculo(colecaoVeiculos);
+            cli.setVeiculos(colecaoVeiculos);
           
             colecaoRetorno.add(cli);//adiciona na colecao
         }
