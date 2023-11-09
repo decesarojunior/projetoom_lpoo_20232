@@ -23,7 +23,7 @@ public class PersistenciaJDBC implements InterfacePersistencia{
     
     private final String DRIVER = "org.postgresql.Driver";
     private final String USER = "postgres";
-    private final String SENHA = "1234567";
+    private final String SENHA = "123456";
     public static final String URL = "jdbc:postgresql://localhost:5432/db_om_lpoo_20232";
     private Connection con = null;
 
@@ -465,6 +465,33 @@ public class PersistenciaJDBC implements InterfacePersistencia{
         ps.close();//fecha o cursor
         
         return colecaoRetorno; //retorna a colecao.
+        
+    }
+
+    @Override
+    public Funcionario doLogin(String cpf, String senha) throws Exception {
+       
+        Funcionario funcionario = null;        
+        PreparedStatement ps = 
+            this.con.prepareStatement("select p.cpf, to_char(p.data_nascimento, 'dd/mm/yyyy') as data_cadastro, p.nome "
+                                        + " from tb_pessoa p "
+                                        + " where p.cpf = ? and p.senha = ? ");
+                        
+            ps.setString(1, cpf);
+            ps.setString(2, senha);
+            
+            ResultSet rs = ps.executeQuery();//o ponteiro do REsultSet inicialmente está na linha -1
+            
+            if(rs.next()){//se a matriz (ResultSet) tem uma linha
+
+                funcionario = new Funcionario();
+                funcionario.setCpf(rs.getString("cpf"));
+                funcionario.setNome(rs.getString("nome"));
+                //...recupera demais campos do ResultSet
+            }
+            ps.close();
+            
+            return funcionario;  
         
     }
     
