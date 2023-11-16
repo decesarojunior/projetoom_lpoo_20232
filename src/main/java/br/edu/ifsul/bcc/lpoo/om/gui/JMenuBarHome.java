@@ -73,7 +73,14 @@ public class JMenuBarHome extends JMenuBar implements ActionListener {
     
     @Override
     public void actionPerformed(ActionEvent ae) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        if(ae.getActionCommand().equals(menuItemLogout.getActionCommand())){
+            
+        }else if(ae.getActionCommand().equals(menuItemSair.getActionCommand())){
+            
+        }else if(ae.getActionCommand().equals(menuItemFuncionario.getActionCommand())){
+            
+            controle.showTela("tela_funcionario");
+        }
     }
     
 }

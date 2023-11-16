@@ -4,6 +4,7 @@ import br.edu.ifsul.bcc.lpoo.om.gui.JFramePrincipal;
 import br.edu.ifsul.bcc.lpoo.om.gui.JMenuBarHome;
 import br.edu.ifsul.bcc.lpoo.om.gui.JPanelHome;
 import br.edu.ifsul.bcc.lpoo.om.gui.autenticacao.JPanelAutenticacao;
+import br.edu.ifsul.bcc.lpoo.om.gui.funcionario.JPanelFuncionario;
 import br.edu.ifsul.bcc.lpoo.om.model.Funcionario;
 import br.edu.ifsul.bcc.lpoo.om.model.dao.PersistenciaJDBC;
 import javax.swing.JOptionPane;
@@ -19,6 +20,7 @@ public class Controle {
     private JFramePrincipal jframe;
     private PersistenciaJDBC conexaoJDBC;
     private JPanelAutenticacao telaAutenticacao;
+    private JPanelFuncionario telaFuncionario;
     private JMenuBarHome menuBar;
     private JPanelHome  telaHome;
     
@@ -73,14 +75,32 @@ public class Controle {
          
          menuBar = new JMenuBarHome(this);
          
+         telaFuncionario = new JPanelFuncionario(this);
+         
          //adicionando no baralho a tela de autenticacao
          jframe.addTela(telaAutenticacao, "tela_autenticacao");
          
          jframe.addTela(telaHome, "tela_home"); //adiciona
          
+         jframe.addTela(telaFuncionario, "tela_funcionario");
+         
          jframe.showTela("tela_autenticacao");
          
          jframe.setVisible(true);//mostra o JFrame
+    }
+    
+    public void showTela(String nomeTela){
+         
+        //para cada nova tela de CRUD adicionar um elseif
+        
+         if(nomeTela.equals("tela_funcionario")){
+             
+            telaFuncionario.showTela("tela_funcionario_listagem");
+                        
+         }
+         
+         jframe.showTela(nomeTela);
+         
     }
     
     
