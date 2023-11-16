@@ -3,6 +3,7 @@ package br.edu.ifsul.bcc.lpoo.om.test;
 
 import br.edu.ifsul.bcc.lpoo.om.model.Cargo;
 import br.edu.ifsul.bcc.lpoo.om.model.Cliente;
+import br.edu.ifsul.bcc.lpoo.om.model.Funcionario;
 import br.edu.ifsul.bcc.lpoo.om.model.Veiculo;
 import br.edu.ifsul.bcc.lpoo.om.model.dao.PersistenciaJDBC;
 import java.util.ArrayList;
@@ -78,7 +79,7 @@ public class TestePersistenciaJDBC {
          Passo 3: caso a coleção esteja vazia, criar dois funcionarios com um Curso cada.
     */ 
     
-    @Test
+    //@Test
     public void testPersitenciaClienteJDBC() throws Exception{
         //criar um objeto do tipo PersistenciaJPA.
         PersistenciaJDBC jdbc = new PersistenciaJDBC();
@@ -120,6 +121,47 @@ public class TestePersistenciaJDBC {
                 }
                 
                 jdbc.persist(c);
+                
+            }
+            
+            jdbc.fecharConexao();
+        }else{
+            System.out.println("nao conectou no BD via jdbc ...");
+                        
+        }
+    }
+    
+    @Test
+    public void testPersitenciaFuncionarioJDBC() throws Exception{
+        //criar um objeto do tipo PersistenciaJPA.
+        PersistenciaJDBC jdbc = new PersistenciaJDBC();
+        if(jdbc.conexaoAberta()){
+            System.out.println("conectou no BD via jdbc ...");
+            
+            Collection<Funcionario> list = jdbc.listFuncionarios();
+            if(!list.isEmpty()){
+                
+                //percorrer e remover.
+                for(Funcionario f : list){
+                    
+                    jdbc.remover(f);
+                }
+                
+            }else{
+                
+                Funcionario f = new Funcionario();
+                //setar demais informações.
+                f.setCpf("00001347088");
+                f.setNome("Telmo");
+                f.setData_nascimento(Calendar.getInstance());
+                f.setComplemento(".");
+                f.setCep("99010035");
+                f.setSenha("123456");
+                f.setNumero(".");
+                f.setNumero_ctps("123");
+                
+                
+                jdbc.persist(f);
                 
             }
             

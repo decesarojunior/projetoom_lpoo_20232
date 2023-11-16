@@ -151,15 +151,21 @@ public class PersistenciaJDBC implements InterfacePersistencia{
                   
                   //insert tb_pessoa
                   PreparedStatement ps = 
-                          this.con.prepareStatement("insert into tb_pessoa ( "
+                          this.con.prepareStatement("insert into tb_pessoa (  nome, "
+                                                                            + "senha, "
                                                                             + "cpf, "
-                                                                            + "data_nascimento) values "
+                                                                            + "data_nascimento, tipo) values "
                                                                             + "( "
                                                                             + "?, "
-                                                                            + "?) ");
+                                                                            + "?, "
+                                                                            + "?, "
+                                                                            + "?, "
+                                                                            + "'F') ");
                   
-                  ps.setString(1, func.getCpf());        
-                  ps.setDate(2, new java.sql.Date(func.getData_nascimento().getTimeInMillis()));
+                  ps.setString(1, func.getNome());
+                  ps.setString(2, func.getSenha());
+                  ps.setString(3, func.getCpf());        
+                  ps.setDate(4, new java.sql.Date(func.getData_nascimento().getTimeInMillis()));
                   //demais campos...
                 
                   ps.execute();
@@ -168,8 +174,10 @@ public class PersistenciaJDBC implements InterfacePersistencia{
 
                   //insert em tb_funcionario
                   PreparedStatement ps2 = 
-                      this.con.prepareStatement("insert into tb_funcionario (data_admmissao) values (now())  ..."); 
-                     //setar os parametros...
+                      this.con.prepareStatement("insert into tb_funcionario (numero_ctps, cpf, data_admissao) values (?, ?, now()) returning data_admissao"); 
+                      ps2.setString(1, func.getNumero_ctps());
+                      ps2.setString(2, func.getCpf());
+                      
 
                   ResultSet rs2 = ps2.executeQuery();
                   if(rs2.next()){
@@ -393,15 +401,18 @@ public class PersistenciaJDBC implements InterfacePersistencia{
     public Collection<Funcionario> listFuncionarios() throws Exception {
         Collection<Funcionario> colecaoRetorno = null;
         
-        PreparedStatement ps = this.con.prepareStatement("");        
+        PreparedStatement ps = this.con.prepareStatement("select p.nome, p.senha, p.cpf from tb_pessoa p, "
+                                                                    + "tb_funcionario f where p.cpf=f.cpf");        
         ResultSet rs = ps.executeQuery();//executa o sql e retorna
         
         colecaoRetorno = new ArrayList();//inicializa a collecao
         
         while(rs.next()){//percorre o ResultSet
             
-            Funcionario func = new Funcionario();//inicializa o Cargo
+            Funcionario func = new Funcionario();//inicializa
+            func.setNome(rs.getString("nome"));
             //seta as informações do rs
+            /*
             PreparedStatement ps2 = this.con.prepareStatement("selecte ... from tb_funcionario_cur");
             ResultSet rs2 = ps.executeQuery();//executa o sql e retorna
             Collection<Curso> colecaoCursos = new ArrayList();
@@ -413,7 +424,8 @@ public class PersistenciaJDBC implements InterfacePersistencia{
             rs2.close();
             
             func.setCursos(colecaoCursos);
-          
+            */
+            
             colecaoRetorno.add(func);//adiciona na colecao
         }
         
@@ -475,7 +487,7 @@ public class PersistenciaJDBC implements InterfacePersistencia{
         PreparedStatement ps = 
             this.con.prepareStatement("select p.cpf, to_char(p.data_nascimento, 'dd/mm/yyyy') as data_cadastro, p.nome "
                                         + " from tb_pessoa p "
-                                        + " where p.cpf = ? and p.senha = ? ");
+                                        + " where p.cpf = ? and p.senha = ? and tipo = 'F' ");
                         
             ps.setString(1, cpf);
             ps.setString(2, senha);

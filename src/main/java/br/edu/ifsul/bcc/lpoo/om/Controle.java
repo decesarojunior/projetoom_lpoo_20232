@@ -2,6 +2,7 @@ package br.edu.ifsul.bcc.lpoo.om;
 
 import br.edu.ifsul.bcc.lpoo.om.gui.JFramePrincipal;
 import br.edu.ifsul.bcc.lpoo.om.gui.JMenuBarHome;
+import br.edu.ifsul.bcc.lpoo.om.gui.JPanelHome;
 import br.edu.ifsul.bcc.lpoo.om.gui.autenticacao.JPanelAutenticacao;
 import br.edu.ifsul.bcc.lpoo.om.model.Funcionario;
 import br.edu.ifsul.bcc.lpoo.om.model.dao.PersistenciaJDBC;
@@ -19,6 +20,7 @@ public class Controle {
     private PersistenciaJDBC conexaoJDBC;
     private JPanelAutenticacao telaAutenticacao;
     private JMenuBarHome menuBar;
+    private JPanelHome  telaHome;
     
 
     public Controle() {
@@ -67,10 +69,14 @@ public class Controle {
          
          telaAutenticacao = new JPanelAutenticacao(this);
          
+         telaHome = new JPanelHome(this);
+         
          menuBar = new JMenuBarHome(this);
          
          //adicionando no baralho a tela de autenticacao
          jframe.addTela(telaAutenticacao, "tela_autenticacao");
+         
+         jframe.addTela(telaHome, "tela_home"); //adiciona
          
          jframe.showTela("tela_autenticacao");
          
