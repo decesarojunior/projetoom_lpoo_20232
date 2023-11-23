@@ -102,6 +102,10 @@ public class Controle {
          jframe.showTela(nomeTela);
          
     }
+
+    public PersistenciaJDBC getConexaoJDBC() {
+        return conexaoJDBC;
+    }
     
     
 }

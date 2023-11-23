@@ -410,6 +410,7 @@ public class PersistenciaJDBC implements InterfacePersistencia{
         while(rs.next()){//percorre o ResultSet
             
             Funcionario func = new Funcionario();//inicializa
+            func.setCpf(rs.getString("cpf"));
             func.setNome(rs.getString("nome"));
             //seta as informações do rs
             /*

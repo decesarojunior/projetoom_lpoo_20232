@@ -40,7 +40,7 @@ public class JPanelFuncionario extends JPanel {
         
         if(nomeTela.equals("tela_funcionario_listagem")){
             
-            //listagem.populaTable();
+            listagem.populaTable();
             
         }else if(nomeTela.equals("tela_funcionario_formulario")){
             
