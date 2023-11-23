@@ -51,4 +51,10 @@ public class JPanelFuncionario extends JPanel {
         cardLayout.show(this, nomeTela);
         
     }
+
+    public JPanelFuncionarioFormulario getFormulario() {
+        return formulario;
+    }
+    
+    
 }

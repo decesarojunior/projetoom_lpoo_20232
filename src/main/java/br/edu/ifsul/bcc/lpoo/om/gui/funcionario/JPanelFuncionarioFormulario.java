@@ -1,6 +1,7 @@
 
 package br.edu.ifsul.bcc.lpoo.om.gui.funcionario;
 import br.edu.ifsul.bcc.lpoo.om.Controle;
+import br.edu.ifsul.bcc.lpoo.om.model.Funcionario;
 import javax.swing.JPanel;
 
 /**
@@ -17,6 +18,9 @@ public class JPanelFuncionarioFormulario extends JPanel {
         this.pnlFuncionario = pnlFuncionario;
     }
     
+    public void setFuncionarioFormulario(Funcionario f){
+        //seta nos campos
+    }
     
     
     
