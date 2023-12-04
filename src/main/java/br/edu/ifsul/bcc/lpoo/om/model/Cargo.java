@@ -67,7 +67,19 @@ public class Cargo implements Serializable{
         this.descricao = descricao;
     }
     
-    
+    @Override
+    public boolean equals(Object c){
+        if(c instanceof Cargo){
+        
+            if( ( ((Cargo) c) .getId()).equals(this.id)){
+                return true;
+            }
+        }
+        
+        
+        return false;
+    }
+            
     
     
 }

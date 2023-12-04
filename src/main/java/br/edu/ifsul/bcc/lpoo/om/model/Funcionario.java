@@ -84,6 +84,17 @@ public class Funcionario extends Pessoa {
     public Calendar getData_admmissao() {
         return data_admmissao;
     }
+    
+    public String getData_admmissao_string() {
+        if(this.data_admmissao != null){
+            return this.data_admmissao.get(Calendar.DAY_OF_MONTH) + "/"+
+                   this.data_admmissao.get(Calendar.MONTH) + "/"+
+                   this.data_admmissao.get(Calendar.YEAR); 
+        }else{
+            return "";
+        }
+        
+    }
 
     public void setData_admmissao(Calendar data_admmissao) {
         this.data_admmissao = data_admmissao;

@@ -401,8 +401,8 @@ public class PersistenciaJDBC implements InterfacePersistencia{
     public Collection<Funcionario> listFuncionarios() throws Exception {
         Collection<Funcionario> colecaoRetorno = null;
         
-        PreparedStatement ps = this.con.prepareStatement("select p.nome, p.senha, p.cpf from tb_pessoa p, "
-                                                                    + "tb_funcionario f where p.cpf=f.cpf");        
+        PreparedStatement ps = this.con.prepareStatement("select p.nome, p.senha, p.cpf, f.data_admissao, f.numero_ctps, c.id, c.descricao from tb_pessoa p, "
+                                                                    + "tb_funcionario f left join tb_cargo c on (f.cargo_id=c.id) where p.cpf=f.cpf");        
         ResultSet rs = ps.executeQuery();//executa o sql e retorna
         
         colecaoRetorno = new ArrayList();//inicializa a collecao
@@ -412,6 +412,16 @@ public class PersistenciaJDBC implements InterfacePersistencia{
             Funcionario func = new Funcionario();//inicializa
             func.setCpf(rs.getString("cpf"));
             func.setNome(rs.getString("nome"));
+            func.setSenha(rs.getString("senha"));
+            Calendar c = Calendar.getInstance();
+            c.setTimeInMillis(rs.getDate("data_admissao").getTime());
+            func.setData_admmissao(c);
+            func.setNumero_ctps(rs.getString("numero_ctps"));
+            Cargo cg = new Cargo();
+            cg.setId(rs.getInt("id"));
+            cg.setDescricao(rs.getString("descricao"));
+            func.setCargo(cg);
+            
             //seta as informações do rs
             /*
             PreparedStatement ps2 = this.con.prepareStatement("selecte ... from tb_funcionario_cur");

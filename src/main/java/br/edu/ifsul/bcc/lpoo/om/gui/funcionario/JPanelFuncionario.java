@@ -44,7 +44,7 @@ public class JPanelFuncionario extends JPanel {
             
         }else if(nomeTela.equals("tela_funcionario_formulario")){
             
-            //getFormulario().populaComboCargo();
+            getFormulario().populaComboCargo();
             
         }
         
