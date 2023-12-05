@@ -164,8 +164,12 @@ public class PersistenciaJDBC implements InterfacePersistencia{
                   
                   ps.setString(1, func.getNome());
                   ps.setString(2, func.getSenha());
-                  ps.setString(3, func.getCpf());        
-                  ps.setDate(4, new java.sql.Date(func.getData_nascimento().getTimeInMillis()));
+                  ps.setString(3, func.getCpf());
+                  if(func.getData_nascimento() != null){
+                    ps.setDate(4, new java.sql.Date(func.getData_nascimento().getTimeInMillis()));
+                  }else{
+                      ps.setDate(4, null);
+                  }
                   //demais campos...
                 
                   ps.execute();
@@ -174,20 +178,21 @@ public class PersistenciaJDBC implements InterfacePersistencia{
 
                   //insert em tb_funcionario
                   PreparedStatement ps2 = 
-                      this.con.prepareStatement("insert into tb_funcionario (numero_ctps, cpf, data_admissao) values (?, ?, now()) returning data_admissao"); 
+                      this.con.prepareStatement("insert into tb_funcionario (numero_ctps, cpf, data_admissao, cargo_id) values (?, ?, now(), ?) returning data_admissao"); 
                       ps2.setString(1, func.getNumero_ctps());
                       ps2.setString(2, func.getCpf());
+                      ps2.setInt(3, func.getCargo().getId());
                       
 
                   ResultSet rs2 = ps2.executeQuery();
                   if(rs2.next()){
                       
                         Calendar dt_adm = Calendar.getInstance();
-                        dt_adm.setTimeInMillis(rs2.getDate("data_admmissao").getTime());
+                        dt_adm.setTimeInMillis(rs2.getDate("data_admissao").getTime());
                         func.setData_admmissao(dt_adm);
                   
                         //se necessário o insert em tb_funcionario_curso
-                        if (!func.getCursos().isEmpty()){
+                        if (func.getCursos() != null && !func.getCursos().isEmpty()){
 
                             for(Curso crs : func.getCursos()){
 
@@ -212,24 +217,34 @@ public class PersistenciaJDBC implements InterfacePersistencia{
                   
                     //update tb_pessoa.
                     PreparedStatement ps = 
-                          this.con.prepareStatement("update tb_pessoa set data_nascimento = ? where cpf = ? ");
+                          this.con.prepareStatement("update tb_pessoa set nome = ?, senha = ?, data_nascimento = ? where cpf = ? ");
                     //setar os demais campos e parametros.
+                    ps.setString(1, func.getNome());
+                    ps.setString(2, func.getSenha());
+                    if(func.getData_nascimento() != null){
+                      ps.setDate(3, new java.sql.Date(func.getData_nascimento().getTimeInMillis()));                    
+                    }else{
+                      ps.setDate(3, null);  
+                    }
+                    ps.setString(4, func.getCpf());
                   
                     //update tb_funcionario.
                     PreparedStatement ps2 = 
-                          this.con.prepareStatement("update tb_funcionario set numero_ctps = ? where cpf = ? ");
+                          this.con.prepareStatement("update tb_funcionario set numero_ctps = ?, cargo_id = ? where cpf = ? ");
                     //setar os demais campos e parametros.
-                                     
+                    ps2.setString(1, func.getNumero_ctps());
+                    ps2.setInt(2, func.getCargo().getId());
+                    ps2.setString(3, func.getCpf());                 
                     //atualizar os respectivos registros em tb_funcionario_curso para o func
                    
                      //passo 1 - remove todos os cursos do funcionario na tabela associativa 
                      PreparedStatement ps3 = 
-                          this.con.prepareStatement("delete from tb_funcionario_curso where cpf = ?");
-                     
+                          this.con.prepareStatement("delete from tb_funcionario_curso where funcionario_cpf = ?");
+                          ps3.setString(1, func.getCpf());
                      ps3.execute();
                      
                     //passo 2: insere novamente, caso necessario. 
-                    if (!func.getCursos().isEmpty()){
+                    if (func.getCursos() != null && !func.getCursos().isEmpty()){
                             
                             for(Curso crs : func.getCursos()){
                                 
@@ -333,6 +348,26 @@ public class PersistenciaJDBC implements InterfacePersistencia{
                 
             //remove os respectivos registro na tabela associativa
             //remover em tb_funcionario
+            Funcionario f = (Funcionario) o;
+            
+            PreparedStatement ps = this.con.prepareStatement("delete from "
+                        + "tb_funcionario where cpf = ?;");
+                //definir os valores para os parametros
+                ps.setString(1, f.getCpf());
+                
+            ps.execute();
+            ps.close();
+            
+            
+            ps = this.con.prepareStatement("delete from "
+                        + "tb_pessoa where cpf = ?;");
+                //definir os valores para os parametros
+                ps.setString(1, f.getCpf());
+                
+            ps.execute();
+            ps.close();
+            
+            
             
         }else if(o instanceof Cliente){
             

@@ -2,6 +2,7 @@
 package br.edu.ifsul.bcc.lpoo.om.model;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
@@ -57,8 +58,12 @@ public abstract class Pessoa implements Serializable {
     //transient significa que não será persistido pelo jpa
     @Transient
     private String tipo;
+    
+    @Transient
+    private SimpleDateFormat sdf;
 
     public Pessoa() {
+        sdf = new SimpleDateFormat("dd/MM/yyyy");
     }
 
     /**
@@ -109,6 +114,18 @@ public abstract class Pessoa implements Serializable {
     public Calendar getData_nascimento() {
         return data_nascimento;
     }
+    
+    public String getData_nascimento_string() {
+        if(this.data_nascimento != null){
+            return this.data_nascimento.get(Calendar.DAY_OF_MONTH) + "/"+
+                   this.data_nascimento.get(Calendar.MONTH) + "/"+
+                   this.data_nascimento.get(Calendar.YEAR); 
+        }else{
+            return "";
+        }
+        
+    }
+        
 
     /**
      * @param data_nascimento the data_nascimento to set
@@ -116,6 +133,20 @@ public abstract class Pessoa implements Serializable {
     public void setData_nascimento(Calendar data_nascimento) {
         this.data_nascimento = data_nascimento;
     }
+    
+    public void setData_nascimento(String data_admmissao){
+        
+        try{
+             this.data_nascimento = Calendar.getInstance();
+             this.data_nascimento.setTimeInMillis(sdf.parse(data_admmissao).getTime());
+            
+        }catch(Exception e){
+            
+            this.data_nascimento = null;
+        }
+                
+    }
+        
 
     /**
      * @return the cep

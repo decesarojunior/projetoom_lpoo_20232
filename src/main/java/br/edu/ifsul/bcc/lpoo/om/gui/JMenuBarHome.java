@@ -8,6 +8,7 @@ import java.awt.event.KeyEvent;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -86,6 +87,12 @@ public class JMenuBarHome extends JMenuBar implements ActionListener {
         if(ae.getActionCommand().equals(menuItemLogout.getActionCommand())){
             
         }else if(ae.getActionCommand().equals(menuItemSair.getActionCommand())){
+            
+            int decisao = JOptionPane.showConfirmDialog(this, "Deseja realmente sair ?");
+            if(decisao == 0){
+                controle.getConexaoJDBC().fecharConexao();
+                System.exit(0);
+            }
             
         }else if(ae.getActionCommand().equals(menuItemFuncionario.getActionCommand())){
             

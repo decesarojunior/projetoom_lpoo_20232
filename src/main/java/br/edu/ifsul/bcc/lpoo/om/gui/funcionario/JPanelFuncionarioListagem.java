@@ -90,19 +90,19 @@ public class JPanelFuncionarioListagem extends JPanel implements ActionListener{
         
         btnRemover = new JButton("Remover");
         btnRemover.setActionCommand("comando_remover");
-        btnEditar.addActionListener(this);           
+        btnRemover.addActionListener(this);           
         pnlSul.add(btnRemover);
         
         this.add(pnlSul, BorderLayout.SOUTH);
     }
     
-     public void populaTable(){
+     public void populaTable() throws Exception{
         
         DefaultTableModel model =  (DefaultTableModel) tabela.getModel();//recuperacao do modelo da tabela
 
         model.setRowCount(0);//elimina as linhas existentes (reset na tabela)
 
-        try {
+      
 
             Collection<Funcionario> listFuncionarios =  controle.getConexaoJDBC().listFuncionarios();
             for(Funcionario f : listFuncionarios){
@@ -113,11 +113,7 @@ public class JPanelFuncionarioListagem extends JPanel implements ActionListener{
 
             }
 
-        } catch (Exception ex) {
-
-            JOptionPane.showMessageDialog(this, "Erro ao listar Funcionarios -:"+ex.getLocalizedMessage(), "Jogadores", JOptionPane.ERROR_MESSAGE);
-            ex.printStackTrace();
-        }        
+             
         
     }
 
@@ -150,6 +146,31 @@ public class JPanelFuncionarioListagem extends JPanel implements ActionListener{
                   JOptionPane.showMessageDialog(this, "Selecione uma linha para editar!", "Edição", JOptionPane.INFORMATION_MESSAGE);
             }
             
+            
+        }else if(ae.getActionCommand().equals(btnRemover.getActionCommand())){
+            
+            int indice = tabela.getSelectedRow();//recupera a linha selecionada
+            if(indice > -1){
+
+                DefaultTableModel model =  (DefaultTableModel) tabela.getModel(); //recuperacao do modelo da table
+
+                Vector linha = (Vector) model.getDataVector().get(indice);//recupera o vetor de dados da linha selecionada
+
+                Funcionario f = (Funcionario) linha.get(0); //model.addRow(new Object[]{u, u.getNome(), ...
+
+                try {
+                    pnlFuncionario.getControle().getConexaoJDBC().remover(f);
+                    JOptionPane.showMessageDialog(this, "Funcionario removido!", "Funcionario", JOptionPane.INFORMATION_MESSAGE);
+                    populaTable(); //refresh na tabela
+
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(this, "Erro ao remover Funcionario -:"+ex.getLocalizedMessage(), "Funcionario", JOptionPane.ERROR_MESSAGE);
+                    ex.printStackTrace();
+                }                        
+
+            }else{
+                  JOptionPane.showMessageDialog(this, "Selecione uma linha para remover!", "Remoção", JOptionPane.INFORMATION_MESSAGE);
+            }
             
         }
     }

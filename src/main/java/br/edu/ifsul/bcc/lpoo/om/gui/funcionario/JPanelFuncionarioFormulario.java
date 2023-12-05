@@ -1,17 +1,20 @@
 
 package br.edu.ifsul.bcc.lpoo.om.gui.funcionario;
 import br.edu.ifsul.bcc.lpoo.om.Controle;
+import br.edu.ifsul.bcc.lpoo.om.model.Cargo;
 import br.edu.ifsul.bcc.lpoo.om.model.Funcionario;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.persistence.Column;
-import javax.persistence.Id;
+import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
@@ -21,6 +24,9 @@ import javax.swing.JTextField;
  * @author telmo
  */
 public class JPanelFuncionarioFormulario extends JPanel implements ActionListener{
+    
+    private BorderLayout borderLayout;
+    private JPanel pnlCentro;
     
     private GridBagLayout gridBagLayout;
     private GridBagConstraints posicionador;
@@ -42,10 +48,14 @@ public class JPanelFuncionarioFormulario extends JPanel implements ActionListene
     private JLabel lblDataAdmissao;
     private JTextField txfDataAdmissao;
     
+    private JLabel lblDataNascimento;
+    private JTextField txfDataNascimento;
+    
     private JLabel lblCargo;
     private JComboBox cbxCargo;
     private DefaultComboBoxModel modeloComboCargo;
     
+    private JPanel pnlSul;
     private JButton btnSalvar;
     private JButton btnCancelar;
  
@@ -56,8 +66,40 @@ public class JPanelFuncionarioFormulario extends JPanel implements ActionListene
         initComponents();
     }
     
-    public void populaComboCargo(){
+    public void populaComboCargo() throws Exception {
+        cbxCargo.removeAllItems();//zera o combo
+        DefaultComboBoxModel model =  (DefaultComboBoxModel) cbxCargo.getModel();
+        model.addElement("Selecione");
+        model.addAll(controle.getConexaoJDBC().listCargos());
         
+    }
+    
+    public Funcionario getFuncionarioFormulario(){
+        
+        if(txfCPF.getText().trim().length() == 11 &&
+           txfNome.getText().trim().length() > 0  &&
+           new String(psfSenha.getPassword()).trim().length() > 3 &&
+           txfNumero_ctps.getText().trim().length() > 3 &&
+           cbxCargo.getSelectedIndex() > 0){
+            
+            Funcionario f = new Funcionario();
+                f.setCpf(txfCPF.getText().trim());
+                f.setNome(txfNome.getText().trim());
+                f.setSenha(new String(psfSenha.getPassword()).trim());
+                f.setNumero_ctps(txfNumero_ctps.getText().trim());
+                f.setCargo((Cargo) cbxCargo.getSelectedItem());
+                if(txfDataAdmissao.getText().trim().length() > 0){
+                    f.setData_admmissao(txfDataAdmissao.getText().trim());
+                }
+                if(txfDataNascimento.getText().trim().length() > 0){
+                    f.setData_nascimento(txfDataNascimento.getText().trim());
+                }
+                
+            return f;
+                
+        }
+        
+        return null;
     }
     
     public void setFuncionarioFormulario(Funcionario f){
@@ -67,13 +109,14 @@ public class JPanelFuncionarioFormulario extends JPanel implements ActionListene
             psfSenha.setText("");
             txfNumero_ctps.setText("");
             txfDataAdmissao.setText("");
+            txfDataNascimento.setText("");
             cbxCargo.setSelectedIndex(0);
         }else{
             txfCPF.setText(f.getCpf());
             txfNome.setText(f.getNome());
             psfSenha.setText(f.getSenha());
             txfNumero_ctps.setText(f.getNumero_ctps());
-            
+            txfDataNascimento.setText(f.getData_nascimento_string());
             txfDataAdmissao.setText(f.getData_admmissao_string());
             cbxCargo.setSelectedItem(f.getCargo());
                     
@@ -81,6 +124,14 @@ public class JPanelFuncionarioFormulario extends JPanel implements ActionListene
     }
     
     private void initComponents(){
+        
+        borderLayout = new BorderLayout();
+        this.setLayout(borderLayout);
+        
+        pnlCentro = new JPanel();
+        gridBagLayout = new GridBagLayout();
+        pnlCentro.setLayout(gridBagLayout);
+        
         
         lblCPF = new JLabel("CPF");
         txfCPF = new JTextField(20);
@@ -96,86 +147,114 @@ public class JPanelFuncionarioFormulario extends JPanel implements ActionListene
     
         lblDataAdmissao = new JLabel("Data de Admissão:");
         txfDataAdmissao = new JTextField(10);
+        txfDataAdmissao.setEditable(false);
+        
+        lblDataNascimento = new JLabel("Data de Nascimento:");
+        txfDataNascimento = new JTextField(10);
     
         lblCargo = new JLabel("Cargo:");
         cbxCargo = new JComboBox();    
         modeloComboCargo = new DefaultComboBoxModel(new Object[]{"Selecione"});
         cbxCargo.setModel(modeloComboCargo);
-    
-        gridBagLayout = new GridBagLayout();
-        this.setLayout(gridBagLayout);
         
         posicionador = new GridBagConstraints();
         posicionador.gridy = 0;
         posicionador.gridx = 0;
         posicionador.anchor = java.awt.GridBagConstraints.LINE_END;
-        this.add(lblCPF, posicionador);
+        pnlCentro.add(lblCPF, posicionador);
         
         posicionador = new GridBagConstraints();
         posicionador.gridy = 0;
         posicionador.gridx = 1;
         posicionador.anchor = java.awt.GridBagConstraints.LINE_START;
-        this.add(txfCPF, posicionador);
+        pnlCentro.add(txfCPF, posicionador);
                 
         posicionador = new GridBagConstraints();
         posicionador.gridy = 1;
         posicionador.gridx = 0;
         posicionador.anchor = java.awt.GridBagConstraints.LINE_END;
-        this.add(lblNome, posicionador);
+        pnlCentro.add(lblNome, posicionador);
         
         posicionador = new GridBagConstraints();
         posicionador.gridy = 1;
         posicionador.gridx = 1;
         posicionador.anchor = java.awt.GridBagConstraints.LINE_START;
-        this.add(txfNome, posicionador);
+        pnlCentro.add(txfNome, posicionador);
         
         posicionador = new GridBagConstraints();
         posicionador.gridy = 2;
         posicionador.gridx = 0;
         posicionador.anchor = java.awt.GridBagConstraints.LINE_END;
-        this.add(lblSenha, posicionador);
+        pnlCentro.add(lblSenha, posicionador);
         
         posicionador = new GridBagConstraints();
         posicionador.gridy = 2;
         posicionador.gridx = 1;
         posicionador.anchor = java.awt.GridBagConstraints.LINE_START;
-        this.add(psfSenha, posicionador);
+        pnlCentro.add(psfSenha, posicionador);
         
         posicionador = new GridBagConstraints();
         posicionador.gridy = 3;
         posicionador.gridx = 0;
         posicionador.anchor = java.awt.GridBagConstraints.LINE_END;
-        this.add(lblNumero_ctps, posicionador);
+        pnlCentro.add(lblNumero_ctps, posicionador);
         
         posicionador = new GridBagConstraints();
         posicionador.gridy = 3;
         posicionador.gridx = 1;
         posicionador.anchor = java.awt.GridBagConstraints.LINE_START;
-        this.add(txfNumero_ctps, posicionador);
+        pnlCentro.add(txfNumero_ctps, posicionador);
         
         posicionador = new GridBagConstraints();
         posicionador.gridy = 4;
         posicionador.gridx = 0;
         posicionador.anchor = java.awt.GridBagConstraints.LINE_END;
-        this.add(lblDataAdmissao, posicionador);
+        pnlCentro.add(lblDataAdmissao, posicionador);
         
         posicionador = new GridBagConstraints();
         posicionador.gridy = 4;
         posicionador.gridx = 1;
         posicionador.anchor = java.awt.GridBagConstraints.LINE_START;
-        this.add(txfDataAdmissao, posicionador); 
+        pnlCentro.add(txfDataAdmissao, posicionador); 
         
         posicionador = new GridBagConstraints();
         posicionador.gridy = 5;
         posicionador.gridx = 0;
         posicionador.anchor = java.awt.GridBagConstraints.LINE_END;
-        this.add(lblCargo, posicionador);
-        
+        pnlCentro.add(lblDataNascimento, posicionador);
+ 
         posicionador = new GridBagConstraints();
         posicionador.gridy = 5;
         posicionador.gridx = 1;
         posicionador.anchor = java.awt.GridBagConstraints.LINE_START;
-        this.add(cbxCargo, posicionador);  
+        pnlCentro.add(txfDataNascimento, posicionador);  
+        
+        posicionador = new GridBagConstraints();
+        posicionador.gridy = 6;
+        posicionador.gridx = 0;
+        posicionador.anchor = java.awt.GridBagConstraints.LINE_END;
+        pnlCentro.add(lblCargo, posicionador);
+ 
+        posicionador = new GridBagConstraints();
+        posicionador.gridy = 6;
+        posicionador.gridx = 1;
+        posicionador.anchor = java.awt.GridBagConstraints.LINE_START;
+        pnlCentro.add(cbxCargo, posicionador);  
+        
+        this.add(pnlCentro, BorderLayout.CENTER);
+        
+        pnlSul = new JPanel();
+        btnSalvar = new JButton("Salvar");
+        btnSalvar.setActionCommand("botao_salvar");
+        btnSalvar.addActionListener(this);
+        btnCancelar = new JButton("Cancelar");
+        btnCancelar.setActionCommand("botao_cancelar");
+        btnCancelar.addActionListener(this);
+        pnlSul.setLayout(new FlowLayout());
+        pnlSul.add(btnSalvar);
+        pnlSul.add(btnCancelar);
+        
+        this.add(pnlSul, BorderLayout.SOUTH);
         
     }
     
@@ -183,7 +262,35 @@ public class JPanelFuncionarioFormulario extends JPanel implements ActionListene
 
     @Override
     public void actionPerformed(ActionEvent ae) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        if(ae.getActionCommand().equals(btnCancelar.getActionCommand())){
+            
+            pnlFuncionario.showTela("tela_funcionario_listagem");
+            
+        }else if(ae.getActionCommand().equals(btnSalvar.getActionCommand())){
+            
+            Funcionario f = getFuncionarioFormulario();//recupera os dados do formulario
+            
+            if(f != null){
+
+                try {
+                    
+                    pnlFuncionario.getControle().getConexaoJDBC().persist(f);
+                    
+                    JOptionPane.showMessageDialog(this, "Funcionario armazenado!", "Salvar", JOptionPane.INFORMATION_MESSAGE);
+                    
+                    pnlFuncionario.showTela("tela_funcionario_listagem");
+
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(this, "Erro ao salvar Jogador! : "+ex.getMessage(), "Salvar", JOptionPane.ERROR_MESSAGE);
+                    ex.printStackTrace();
+                }
+
+            }else{
+
+                JOptionPane.showMessageDialog(this, "Preencha o formulário!", "Edição", JOptionPane.INFORMATION_MESSAGE);
+            }
+            
+        }
     }
     
     

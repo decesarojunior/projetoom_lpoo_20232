@@ -1,6 +1,7 @@
 
 package br.edu.ifsul.bcc.lpoo.om.model;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -14,6 +15,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 /**
  *
@@ -46,8 +48,11 @@ public class Funcionario extends Pessoa {
   
     private Collection<Curso> cursos;
     
+    @Transient
+    private SimpleDateFormat sdf;
 
     public Funcionario() {
+        sdf = new SimpleDateFormat("dd/MM/yyyy");
     }
 
     public Cargo getCargo() {
@@ -99,6 +104,19 @@ public class Funcionario extends Pessoa {
     public void setData_admmissao(Calendar data_admmissao) {
         this.data_admmissao = data_admmissao;
     }
+    
+    public void setData_admmissao(String data_admmissao){
+        
+        try{
+             this.data_admmissao = Calendar.getInstance();
+             this.data_admmissao.setTimeInMillis(sdf.parse(data_admmissao).getTime());
+            
+        }catch(Exception e){
+            
+            this.data_admmissao = null;
+        }
+                
+    }
 
     public Calendar getData_demissao() {
         return data_demissao;
@@ -106,6 +124,18 @@ public class Funcionario extends Pessoa {
 
     public void setData_demissao(Calendar data_demissao) {
         this.data_demissao = data_demissao;
+    }
+    
+    public void setData_demissao(String data_demissao) {
+        try{
+             this.data_demissao = Calendar.getInstance();
+             this.data_demissao.setTimeInMillis(sdf.parse(data_demissao).getTime());
+            
+        }catch(Exception e){
+            
+            this.data_demissao = null;
+        }
+       
     }
     
     @Override
