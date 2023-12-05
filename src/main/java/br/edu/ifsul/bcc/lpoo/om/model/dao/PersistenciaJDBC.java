@@ -227,6 +227,8 @@ public class PersistenciaJDBC implements InterfacePersistencia{
                       ps.setDate(3, null);  
                     }
                     ps.setString(4, func.getCpf());
+                    
+                    ps.execute();
                   
                     //update tb_funcionario.
                     PreparedStatement ps2 = 
@@ -234,7 +236,9 @@ public class PersistenciaJDBC implements InterfacePersistencia{
                     //setar os demais campos e parametros.
                     ps2.setString(1, func.getNumero_ctps());
                     ps2.setInt(2, func.getCargo().getId());
-                    ps2.setString(3, func.getCpf());                 
+                    ps2.setString(3, func.getCpf()); 
+                    
+                    ps2.execute();
                     //atualizar os respectivos registros em tb_funcionario_curso para o func
                    
                      //passo 1 - remove todos os cursos do funcionario na tabela associativa 
@@ -436,7 +440,7 @@ public class PersistenciaJDBC implements InterfacePersistencia{
     public Collection<Funcionario> listFuncionarios() throws Exception {
         Collection<Funcionario> colecaoRetorno = null;
         
-        PreparedStatement ps = this.con.prepareStatement("select p.nome, p.senha, p.cpf, f.data_admissao, f.numero_ctps, c.id, c.descricao from tb_pessoa p, "
+        PreparedStatement ps = this.con.prepareStatement("select p.nome, p.senha, p.cpf, p.data_nascimento, f.data_admissao, f.numero_ctps, c.id, c.descricao from tb_pessoa p, "
                                                                     + "tb_funcionario f left join tb_cargo c on (f.cargo_id=c.id) where p.cpf=f.cpf");        
         ResultSet rs = ps.executeQuery();//executa o sql e retorna
         
@@ -456,6 +460,11 @@ public class PersistenciaJDBC implements InterfacePersistencia{
             cg.setId(rs.getInt("id"));
             cg.setDescricao(rs.getString("descricao"));
             func.setCargo(cg);
+            if(rs.getDate("data_nascimento") != null){
+                Calendar ca = Calendar.getInstance();
+                ca.setTimeInMillis(rs.getDate("data_nascimento").getTime());
+                func.setData_nascimento(ca);
+            }
             
             //seta as informações do rs
             /*

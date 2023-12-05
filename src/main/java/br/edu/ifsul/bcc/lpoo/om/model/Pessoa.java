@@ -118,7 +118,7 @@ public abstract class Pessoa implements Serializable {
     public String getData_nascimento_string() {
         if(this.data_nascimento != null){
             return this.data_nascimento.get(Calendar.DAY_OF_MONTH) + "/"+
-                   this.data_nascimento.get(Calendar.MONTH) + "/"+
+                   (this.data_nascimento.get(Calendar.MONTH) + 1) + "/"+
                    this.data_nascimento.get(Calendar.YEAR); 
         }else{
             return "";
