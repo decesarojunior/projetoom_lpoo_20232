@@ -4,6 +4,7 @@ package br.edu.ifsul.bcc.lpoo.om.model.dao;
 import br.edu.ifsul.bcc.lpoo.om.model.Cargo;
 import br.edu.ifsul.bcc.lpoo.om.model.Cliente;
 import br.edu.ifsul.bcc.lpoo.om.model.Funcionario;
+import br.edu.ifsul.bcc.lpoo.om.model.MaoObra;
 import java.util.Collection;
 
 /**
@@ -23,5 +24,7 @@ public interface InterfacePersistencia {
     public Collection<Cliente> listClientes() throws Exception;
     
     public Funcionario doLogin(String cpf, String senha) throws Exception;
+    
+    public Collection<MaoObra> listMaoObras(String filtro) throws Exception;
     
 }

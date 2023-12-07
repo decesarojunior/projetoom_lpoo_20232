@@ -57,6 +57,20 @@ public class JPanelFuncionarioListagem extends JPanel implements ActionListener{
         layoutBorder = new BorderLayout();
         this.setLayout(layoutBorder);
         
+        pnlNorte = new JPanel();
+        pnlNorte.setLayout(new FlowLayout());
+        lblFiltro = new JLabel("Filtrar por Nome");
+        txtFiltro = new JTextField(15);
+        
+        btnFiltro = new JButton("Filtrar");
+        btnFiltro.setActionCommand("botao_filtrar");
+        btnFiltro.addActionListener(this);
+        pnlNorte.add(lblFiltro);
+        pnlNorte.add(txtFiltro);
+        pnlNorte.add(btnFiltro);
+        
+        this.add(pnlNorte, BorderLayout.NORTH);
+        
         pnlCentro = new JPanel();
         layoutBorderCentro = new BorderLayout();
         pnlCentro.setLayout(layoutBorderCentro);
@@ -172,6 +186,9 @@ public class JPanelFuncionarioListagem extends JPanel implements ActionListener{
                   JOptionPane.showMessageDialog(this, "Selecione uma linha para remover!", "Remoção", JOptionPane.INFORMATION_MESSAGE);
             }
             
+        }else if(ae.getActionCommand().equals(btnFiltro.getActionCommand())){
+            
+            System.out.println("filtrando ...");
         }
     }
     

@@ -24,7 +24,7 @@ public class MaoObra implements Serializable{
     @Id
     @SequenceGenerator(name = "seq_maoobra", sequenceName = "seq_maoobra_id", allocationSize = 1)
     @GeneratedValue(generator = "seq_maobra", strategy = GenerationType.SEQUENCE)       
-    private String id;
+    private Integer id;
     
     @Column(nullable = false, length = 100)
     private String descricao;
@@ -39,11 +39,11 @@ public class MaoObra implements Serializable{
     public MaoObra() {
     }
 
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

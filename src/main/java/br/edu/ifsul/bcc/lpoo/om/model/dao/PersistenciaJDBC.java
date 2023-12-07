@@ -1,19 +1,28 @@
-
 package br.edu.ifsul.bcc.lpoo.om.model.dao;
 
 import br.edu.ifsul.bcc.lpoo.om.model.Cargo;
 import br.edu.ifsul.bcc.lpoo.om.model.Cliente;
 import br.edu.ifsul.bcc.lpoo.om.model.Curso;
 import br.edu.ifsul.bcc.lpoo.om.model.Funcionario;
+import br.edu.ifsul.bcc.lpoo.om.model.MaoObra;
 import br.edu.ifsul.bcc.lpoo.om.model.Veiculo;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  *
@@ -141,6 +150,37 @@ public class PersistenciaJDBC implements InterfacePersistencia{
                 ps.close();
             }
         }else if( o instanceof Curso){
+            
+        }else if(o instanceof MaoObra){
+            
+            MaoObra mb = (MaoObra) o;
+            if(mb.getId() == null){
+                  PreparedStatement ps = this.con.prepareStatement("insert into "
+                        + "tb_maoobra (id, descricao, valor) values (nextval('seq_maoobra_id') , ? ,  ?) returning id");
+                  ps.setString(1, mb.getDescricao());
+                 
+                  ps.setFloat(2, mb.getValor());
+                  
+                  ResultSet rs = ps.executeQuery();
+                  if(rs.next()){
+                        mb.setId(rs.getInt("id"));
+                  }
+                  ps.close();
+                
+            }else{
+                 PreparedStatement ps = this.con.prepareStatement("update  "
+                        + "tb_maoobra  set descricao = ? , valor = ? where id = ? ");
+                 ps.setString(1, mb.getDescricao());
+                
+                 ps.setFloat(2, mb.getValor());
+                 ps.setInt(3, mb.getId());
+                 
+                 ps.execute();
+                 
+                 ps.close();
+                
+            }
+    
             
         }else if(o instanceof Funcionario){
             
@@ -403,6 +443,17 @@ public class PersistenciaJDBC implements InterfacePersistencia{
             ps.close();
 
 
+        }else if(o instanceof MaoObra){
+            
+            MaoObra m = (MaoObra) o;
+            
+            PreparedStatement ps = this.con.prepareStatement("delete from "
+                        + "tb_maoobra where id = ?;");
+                //definir os valores para os parametros
+            ps.setInt(1, m.getId());
+                
+            ps.execute();
+            ps.close();
         }
         
         
@@ -559,6 +610,46 @@ public class PersistenciaJDBC implements InterfacePersistencia{
             ps.close();
             
             return funcionario;  
+        
+    }
+
+    @Override
+    public Collection<MaoObra> listMaoObras(String filtro_descricao) throws Exception {
+       
+          
+        Collection<MaoObra> colecaoRetorno = null;
+       
+        
+        PreparedStatement ps = null;
+        
+        if(filtro_descricao == null){
+            ps = this.con.prepareStatement("select m.id, m.descricao, m.tempo_estimado_execucao, m.valor from tb_maoobra m order by m.id asc");
+        }else{
+            ps = this.con.prepareStatement("select m.id, m.descricao, m.tempo_estimado_execucao, m.valor from tb_maoobra m where m.descricao like ? order by m.id asc");
+            ps.setString(1, filtro_descricao+"%");
+        }
+                                                                        
+        ResultSet rs = ps.executeQuery();//executa o sql e retorna
+        
+        colecaoRetorno = new ArrayList();//inicializa a collecao
+        
+        while(rs.next()){//percorre o ResultSet
+            
+            MaoObra mo = new MaoObra();//inicializa o Cliente
+            //seta as informações do rs
+            mo.setId(rs.getInt("id"));
+            mo.setDescricao(rs.getString("descricao"));
+            if(rs.getDate("tempo_estimado_execucao") != null)
+                mo.setTempo_estimado_execucao(new java.util.Date(rs.getDate("tempo_estimado_execucao").getTime()));
+            mo.setValor(rs.getFloat("valor"));
+            
+            colecaoRetorno.add(mo);           
+
+        }
+         rs.close();
+        ps.close();//fecha o cursor
+        
+        return colecaoRetorno; //retorna a colecao.
         
     }
     

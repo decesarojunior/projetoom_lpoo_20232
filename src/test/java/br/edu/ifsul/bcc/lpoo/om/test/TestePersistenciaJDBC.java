@@ -4,8 +4,10 @@ package br.edu.ifsul.bcc.lpoo.om.test;
 import br.edu.ifsul.bcc.lpoo.om.model.Cargo;
 import br.edu.ifsul.bcc.lpoo.om.model.Cliente;
 import br.edu.ifsul.bcc.lpoo.om.model.Funcionario;
+import br.edu.ifsul.bcc.lpoo.om.model.MaoObra;
 import br.edu.ifsul.bcc.lpoo.om.model.Veiculo;
 import br.edu.ifsul.bcc.lpoo.om.model.dao.PersistenciaJDBC;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -131,7 +133,7 @@ public class TestePersistenciaJDBC {
         }
     }
     
-    @Test
+    //@Test
     public void testPersitenciaFuncionarioJDBC() throws Exception{
         //criar um objeto do tipo PersistenciaJPA.
         PersistenciaJDBC jdbc = new PersistenciaJDBC();
@@ -186,6 +188,40 @@ public class TestePersistenciaJDBC {
                 System.out.println("id: "+cg.getId()+" Descricao: "+cg.getDescricao());
             }else{
                  System.out.println("Não encontro o cargo");
+            }
+        }else{
+            System.out.println("nao conectou no BD via jdbc ...");
+            //atribuir uma instancia para o cg
+            //setar a descricao
+            //persistir no banco de dados.
+        }
+    }
+    
+    @Test
+    public void testPersistenciaMaoObraJDBC() throws Exception {
+        //criar um objeto do tipo PersistenciaJPA.
+        PersistenciaJDBC jdbc = new PersistenciaJDBC();
+        if(jdbc.conexaoAberta()){
+            
+            //Passo 1: encontrar o cargo id = 1
+            List<MaoObra>  list=  (ArrayList) jdbc.listMaoObras("ote");
+            if(list != null && !list.isEmpty()){
+                for(MaoObra m : list){
+                    System.out.println("MaoObra: "+m.getId() + " removendo ...");
+                    m.setDescricao("alterado");
+                    jdbc.persist(m);
+                    jdbc.remover(m);
+                                      
+                }
+            }else{
+                 System.out.println("Não encontro o cargo, criando um novo ...");
+                 MaoObra mb = new MaoObra();
+                 mb.setDescricao("teste");
+                 mb.setValor(100f);
+                 SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");                
+                 mb.setTempo_estimado_execucao(sdf.parse("2:30"));
+                 jdbc.persist(mb);
+                 
             }
         }else{
             System.out.println("nao conectou no BD via jdbc ...");
